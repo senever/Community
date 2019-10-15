@@ -48,6 +48,8 @@
       - "/mnt/unionfs/Media/Magazines:/magazines"
       - "/mnt/unionfs/Media/Comics:/comics"
       - "/mnt:/mnt"
+      - "/mnt/local/downloads/nzbs:/downloads/nzbs"
+      - "/mnt/local/downloads/torrents:/downloads/torrents"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
     networks:
