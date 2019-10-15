@@ -43,6 +43,10 @@
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/lazylibrarian:/config"
+      - "/mnt/unionfs/Media/Books:/books"
+      - "/mnt/unionfs/Media/AudioBooks:/audiobooks"
+      - "/mnt/unionfs/Media/Magazines:/magazines"
+      - "/mnt/unionfs/Media/Comics:/comics"
       - "/mnt:/mnt"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
