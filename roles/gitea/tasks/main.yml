@@ -1,5 +1,5 @@
 #########################################################################
-# Title:            Cloudbox Community: Gitea                           #
+# Title:            Community: Gitea                                    #
 # Author(s):        Thomvh                                              #
 # URL:              https://github.com/Cloudbox/Community               #
 # Docker Image(s):  gitea/gitea                                         #
@@ -9,11 +9,6 @@
 #                   GNU General Public License v3.0                     #
 #########################################################################
 ---
-- name: Install required packages
-  apt: "name={{ item }} state=latest"
-  with_items:
-    - python-pymysql
-
 - name: MariaDB Role
   include_role:
     name: mariadb
@@ -25,7 +20,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: "{{ gitea.subdomain|default('git',true) }}"
+    record: "{{ gitea.subdomain|default('git',true) }}"
   when: cloudflare_enabled
 
 - name: Stop and remove any existing containers
@@ -33,12 +28,9 @@
   with_items:
     - gitea
 
-- name: Create gitea database
-  mysql_db:
-    name: gitea
-    login_user: root
-    login_password: password321
-    state: present
+- name: "Create gitea database"
+  command: "docker exec mariadb mysql -u root -ppassword321 -e 'create schema gitea DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'"
+  ignore_errors: yes
 
 - name: Create required directories
   file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
@@ -50,25 +42,23 @@
     name: gitea
     image: "gitea/gitea:latest"
     pull: yes
-    published_ports:
-      - "127.0.0.1:3000:3000"
     env:
+      TZ: "{{ tz }}"
       PUID: "{{ uid }}"
       PGID: "{{ gid }}"
-      DB_TYPE: mysql
+      DB_TYPE: "mysql"
       DB_HOST: "mariadb:3306"
-      DB_USER: root
-      DB_PASS: password321
-      DB_DATABASE: gitea
+      DB_USER: "root"
+      DB_PASS: "password321"
+      DB_DATABASE: "gitea"
       VIRTUAL_HOST: "{{ gitea.subdomain|default('git',true) }}.{{ user.domain }}"
-      VIRTUAL_PORT: 3000
+      VIRTUAL_PORT: "3000"
       LETSENCRYPT_HOST: "{{ gitea.subdomain|default('git',true) }}.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
-      DISABLE_SSH: true
-      RUN_MODE: prod
+      DISABLE_SSH: "true"
+      RUN_MODE: "prod"
       ROOT_URL: "https://{{ gitea.subdomain|default('git',true) }}.{{ user.domain }}/"
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "/opt/gitea:/data"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"

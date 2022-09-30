@@ -1,5 +1,5 @@
 #########################################################################
-# Title:            Cloudbox Community: JDownloader2                    #
+# Title:            Community: JDownloader2                             #
 # Author(s):        maximuskowalski, desimaniac                         #
 # URL:              https://github.com/Cloudbox/Community               #
 # Docker Image(s):  jlesage/jdownloader-2                               #
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: jdownloader2
+    record: jdownloader2
   when: cloudflare_enabled
 
 - name: Legacy Migration Tasks
@@ -55,33 +55,31 @@
     name: jdownloader2
     image: "jlesage/jdownloader-2:latest"
     pull: yes
-    published_ports:
-      - "127.0.0.1:5800:5800"
-      - "127.0.0.1:5900:5900"
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
-      - "/mnt/local/downloads/jdownloader2/output:/output:rw"
-      - "/mnt:/mnt:rw"
-      - "/opt/jdownloader2/config:/config:rw"
-      - "/var/run/docker.sock:/var/run/docker.sock"
     env:
+      TZ: "{{ tz }}"
       VIRTUAL_HOST: "jdownloader2.{{ user.domain }}"
-      VIRTUAL_PORT: 5800
+      VIRTUAL_PORT: "5800"
       LETSENCRYPT_HOST: "jdownloader2.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
-      DISPLAY_WIDTH: 1280
-      DISPLAY_HEIGHT: 768
+      DISPLAY_WIDTH: "1280"
+      DISPLAY_HEIGHT: "768"
       VNC_PASSWORD: "{{ user.pass }}"
       USER_ID: "{{ uid }}"
       GROUP_ID: "{{ gid }}"
-      CLEAN_TMP_DIR: 1
-      UMASK: 000
+      CLEAN_TMP_DIR: "1"
+      UMASK: "000"
+    volumes:
+      - "/mnt/local/downloads/jdownloader2/output:/output:rw"
+      - "/mnt:/mnt:rw"
+      - "/opt/jdownloader2/config:/config:rw"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
     networks:
       - name: cloudbox
         aliases:
           - jdownloader2
+    exposed_ports:
+      - 5800
     purge_networks: yes
-    restart_policy: always
+    restart_policy: unless-stopped
     state: started

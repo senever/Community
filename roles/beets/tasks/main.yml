@@ -1,8 +1,8 @@
 #########################################################################
-# Title:            Cloudbox Community: Beets                           #
+# Title:            Community: Beets                                    #
 # Author(s):        fuller882                                           #
 # URL:              https://github.com/Cloudbox/Community               #
-# Docker Image(s):  linuxserver/beets                                   #
+# Docker Image(s):  lscr.io/linuxserver/beets                                   #
 # --                                                                    #
 #         Part of the Cloudbox project: https://cloudbox.works          #
 #########################################################################
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: beets
+    record: beets
   when: cloudflare_enabled
 
 - name: Create htpasswd
@@ -42,20 +42,17 @@
 - name: Create and start container
   docker_container:
     name: beets
-    image: linuxserver/beets
+    image: lscr.io/linuxserver/beets
     pull: yes
-    published_ports:
-      - "127.0.0.1:8337:8337"
     env:
+      TZ: "{{ tz }}"
       PUID: "{{ uid }}"
       PGID: "{{ gid }}"
       VIRTUAL_HOST: "beets.{{ user.domain }}"
-      VIRTUAL_PORT: 8337
+      VIRTUAL_PORT: "8337"
       LETSENCRYPT_HOST: "beets.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
-
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "/opt/beets:/config"
       - "/mnt/unionfs/Media/Music:/music"
       - "/mnt/local/downloads/music:/downloads"
@@ -66,7 +63,7 @@
         aliases:
           - beets
     purge_networks: yes
-    restart_policy: always
+    restart_policy: unless-stopped
     state: started
 
 - name: Add cron schedule for aurtomatic importing
@@ -74,7 +71,7 @@
     name: "Beets Import"
     user: "{{ user.name }}"
     special_time: hourly
-    job: "docker exec -u abc -it beets /bin/bash -c 'beet import -q /downloads'"
+    job: "docker exec -u abc beets /bin/bash -c 'beet import -q /downloads'"
     state: present
 
 - name: Wait for config.yaml to be created

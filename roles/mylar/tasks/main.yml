@@ -1,8 +1,8 @@
 #########################################################################
-# Title:            Cloudbox Community: Mylar                           #
+# Title:            Community: Mylar                                    #
 # Author(s):        fuller882                                           #
 # URL:              https://github.com/Cloudbox/Community               #
-# Docker Image(s):  linuxserver/mylar                                   #
+# Docker Image(s):  lscr.io/linuxserver/mylar                                   #
 # --                                                                    #
 #         Part of the Cloudbox project: https://cloudbox.works          #
 #########################################################################
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: mylar
+    record: mylar
   when: cloudflare_enabled
 
 - name: Stop and remove any existing container
@@ -30,19 +30,19 @@
 - name: Create and start container
   docker_container:
     name: mylar
-    image: linuxserver/mylar
+    image: lscr.io/linuxserver/mylar
     pull: yes
     published_ports:
       - "127.0.0.1:8090:8090"
     env:
+      TZ: "{{ tz }}"
       PUID: "{{ uid }}"
       PGID: "{{ gid }}"
       VIRTUAL_HOST: "mylar.{{ user.domain }}"
-      VIRTUAL_PORT: 8090
+      VIRTUAL_PORT: "8090"
       LETSENCRYPT_HOST: "mylar.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "/opt/mylar:/config"
       - "/mnt/local/downloads/nzbs:/downloads/nzbs"
       - "/mnt/unionfs/Media/Comics:/comics"
@@ -53,5 +53,5 @@
         aliases:
           - mylar
     purge_networks: yes
-    restart_policy: always
+    restart_policy: unless-stopped
     state: started

@@ -1,5 +1,5 @@
 #########################################################################
-# Title:            Cloudbox Community: Minecraft Server                #
+# Title:            Community: Minecraft Server                         #
 # Author(s):        atilling                                            #
 # URL:              https://github.com/Cloudbox/Community               #
 # Docker Image(s):  itzg/minecraft-server                               #
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: minecraft
+    record: minecraft
   when: cloudflare_enabled
 
 - name: Stop and remove any existing container
@@ -34,17 +34,19 @@
     published_ports:
       - "25565:25565"
     env:
-      PUID: "{{ uid }}"
-      PGID: "{{ gid }}"
+      TZ: "{{ tz }}"
+      UID: "{{ uid }}"
+      GID: "{{ gid }}"
       VIRTUAL_HOST: "minecraft.{{ user.domain }}"
-      VIRTUAL_PORT: 25565
-      EULA: TRUE
+      VIRTUAL_PORT: "25565"
+      EULA: "TRUE"
+      WHITELIST: "{{ uid }}"
+      OPS: "{{ uid }}"
       LETSENCRYPT_HOST: "minecraft.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
-      - "/opt/minecraft:/config"
-      - "/mnt/local/data:/data"
+      - "/opt/minecraft/data:/data"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
     networks:
@@ -52,5 +54,5 @@
         aliases:
           - minecraft
     purge_networks: yes
-    restart_policy: always
+    restart_policy: unless-stopped
     state: started

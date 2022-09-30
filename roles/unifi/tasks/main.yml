@@ -1,8 +1,8 @@
 #########################################################################
-# Title:            Cloudbox Community: Unifi Controller                #
+# Title:            Community: Unifi Controller                         #
 # Author(s):        maximuskowalski                                     #
 # URL:              https://github.com/Cloudbox/Community               #
-# Docker Image(s):  linuxserver/unifi-controller                        #
+# Docker Image(s):  lscr.io/linuxserver/unifi-controller                        #
 # --                                                                    #
 #         Part of the Cloudbox project: https://cloudbox.works          #
 #########################################################################
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: unifi
+    record: unifi
   when: cloudflare_enabled
 
 - name: "Create unifi directories"
@@ -28,25 +28,25 @@
 
 - name: "Pull unifi Docker image"
   docker_image:
-    name: "linuxserver/unifi-controller:latest"
+    name: "lscr.io/linuxserver/unifi-controller:latest"
 
 - name: Create and start unifi container
   docker_container:
     name: unifi
-    image: "linuxserver/unifi-controller:latest"
+    image: "lscr.io/linuxserver/unifi-controller:latest"
     published_ports:
       - 3478:3478/udp
-      - 8089:8080
+      - "{{ unifi.port|default('8089',true) }}:8080"
     env:
+      TZ: "{{ tz }}"
       PUID: "{{ uid }}"
       PGID: "{{ gid }}"
       VIRTUAL_HOST: "unifi.{{ user.domain }}"
-      VIRTUAL_PORT: 8443
-      VIRTUAL_PROTO: https
+      VIRTUAL_PORT: "8443"
+      VIRTUAL_PROTO: "https"
       LETSENCRYPT_HOST: "unifi.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "/opt/unifi:/config"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"

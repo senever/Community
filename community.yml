@@ -9,56 +9,137 @@
     # Reqs
     - { role: settings, tags: ['always', 'settings'] }
     - { role: sanity_check, tags: ['always', 'sanity_check'] }
-    - { role: pre_tasks, tags: ['pre_tasks']}
+    - { role: pre_tasks, tags: ['pre_tasks'] }
     # Apps
+    - { role: airdcpp, tags: ['airdcpp'] }
     - { role: airsonic, tags: ['airsonic'] }
     - { role: alltube, tags: ['alltube'] }
+    - { role: alternatrr, tags: ['alternatrr'] }
+    - { role: alternatrrx, tags: ['alternatrrx'] }
+    - { role: amongus, tags: ['amongus'] }
+    - { role: apprise, tags: ['apprise'] }
+    - { role: archivebox, tags: ['archivebox'] }
     - { role: asshama, tags: ['asshama'] }
+    - { role: audiobookshelf, tags: ['audiobookshelf']}
+    - { role: autoscan, tags: ['autoscan'] }
     - { role: bazarrx, tags: ['bazarrx'] }
     - { role: beets, tags: ['beets'] }
     - { role: bitwarden, tags: ['bitwarden'] }
-    - { role: booksonic, tags: ['booksonic']}
+    - { role: booksonic, tags: ['booksonic'] }
     - { role: bookstack, tags: ['bookstack'] }
-    - { role: calibre-rdp, tags: ['calibre-rdp'] }
+    - { role: btrfsmaintenance, tags: ['btrfsmaintenance'] }
+    - { role: calibre, tags: ['calibre'] }
     - { role: calibre-web, tags: ['calibre-web'] }
-    - { role: coder, tags: ['coder']}
+    - { role: changedetection, tags: ['changedetection'] }
+    - { role: coder, tags: ['coder'] }
+    - { role: comixed, tags: ['comixed'] }
+    - { role: comicstreamer, tags: ['comicstreamer'] }
+    - { role: conreq, tags: ['conreq'] }
+    - { role: dashmachine, tags: ['dashmachine'] }
+    - { role: deemix, tags: ['deemix'] }
+    - { role: deemixrr, tags: ['deemixrr'] }
+    - { role: deezloader-remix, tags: ['deezloader-remix'] }
+    - { role: couchpotato, tags: ['couchpotato'] }
     - { role: deluge, tags: ['deluge'] }
     - { role: delugevpn, tags: ['delugevpn'] }
+    - { role: drive_strm, tags: ['drive_strm', 'drive_strm_rebuild'] }
+    - { role: easycountdown, tags: [ 'easycountdown'] }
     - { role: embystat, tags: ['embystat'] }
+    - { role: emby2, tags: ['emby2'] }
     - { role: epms, tags: ['epms'] }
     - { role: filebot, tags: ['filebot'] }
     - { role: filebrowser, tags: ['filebrowser'] }
+    - { role: filezilla, tags: ['filezilla'] }
+    - { role: firefly, tags: ['firefly'] }
+    - { role: flaresolverr, tags: ['flaresolverr'] }
     - { role: funkwhale, tags: ['funkwhale'] }
     - { role: gazee, tags: ['gazee'] }
     - { role: gitea, tags: ['gitea'] }
     - { role: glances, tags: ['glances'] }
     - { role: goplaxt, tags: ['goplaxt'] }
+    - { role: gotify, tags: ['gotify'] }
+    - { role: grafana, tags: ['grafana'] }
     - { role: guacamole, tags: ['guacamole'] }
     - { role: handbrake, tags: ['handbrake'] }
+    - { role: healthchecks, tags: ['healthchecks'] }
+    - { role: heimdall, tags: ['heimdall'] }
+    - { role: hetzner_nfs, tags: ['hetzner_nfs_server', 'hetzner_nfs_server_uninstall', 'hetzner_nfs_client_mount', 'hetzner_nfs_client_unmount'] }
+    - { role: influxdb, tags: ['influxdb'] }
     - { role: invoiceninja, tags: ['invoiceninja'] }
     - { role: jellyfin, tags: ['jellyfin'] }
+    - { role: jfa-go, tags: ['jfa-go', 'jellyfinaccounts', 'jellyfinaccountsgo'] }
     - { role: jirafeau, tags: ['jirafeau'] }
     - { role: kcptun-client, tags: ['kcptun-client'] }
     - { role: kcptun-server, tags: ['kcptun-server'] }
     - { role: kitana, tags: ['kitana'] }
+    - { role: komga, tags: ['komga'] }
     - { role: lazylibrarian, tags: ['lazylibrarian'] }
+    - { role: lidarrx, tags: ['lidarrx'] }
     - { role: logarr, tags: ['logarr'] }
     - { role: mediabutler, tags: ['mediabutler'] }
-    - { role: mellow, tags: ['mellow'] }
+    - { role: medusa, tags: ['medusa'] }
     - { role: minecraft, tags: ['minecraft'] }
+    - { role: mkvtoolnix, tags: ['mkvtoolnix'] }
     - { role: monitorr, tags: ['monitorr'] }
-    - { role: jdownloader2, tags: ['jdownloader2'] }
+    - { role: moviematch, tags: ['moviematch'] }
     - { role: mylar, tags: ['mylar'] }
+    - { role: mylar3, tags: ['mylar3'] }
+    - { role: navidrome, tags: ['navidrome'] }
+    - { role: nextcloud, tags: ['nextcloud'] }
+    - { role: nowshowing, tags: ['nowshowing'] }
+    - { role: nzbhydra, tags: ['nzbhydra'] }
+    - { role: ombix, tags: ['ombix'] }
+    - { role: ouroboros, tags: ['ouroboros'] }
+    - { role: overseerr, tags: ['overseerr'] }
+    - { role: overseerrx, tags: ['overseerrx'] }
+    - { role: jdownloader2, tags: ['jdownloader2'] }
+    - { role: paperless-ng, tags: ['paperless-ng'] }
+    - { role: petio, tags: ['petio'] }
+    - { role: phantombot, tags: ['phantombot'] }
     - { role: plex2, tags: ['plex2'] }
+    - { role: plex-auto-collections, tags: ['plex-auto-collections'] }
+    - { role: plex-meta-manager, tags: ['plex-meta-manager'] }
+    - { role: postgres, tags: ['postgres'] }
+    - { role: prowlarr, tags: ['prowlarr'] }
     - { role: pyload, tags: ['pyload'] }
     - { role: qbittorrent, tags: ['qbittorrent'] }
+    - { role: qbittorrentvpn, tags: ['qbittorrentvpn'] }
+    - { role: quassel, tags: ['quassel'] }
     - { role: radarrx, tags: ['radarrx'] }
+    - { role: readarr, tags: ['readarr'] }
+    - { role: readarrx, tags: ['readarrx'] }
+    - { role: redbot, tags: ['redbot'] }
+    - { role: redis, tags: ['redis'] }
+    - { role: requestrr, tags: ['requestrr'] }
+    - { role: requestrrx, tags: ['requestrrx'] }
+    - { role: resilio-sync, tags: ['resilio-sync'] }
+    - { role: rocketchat, tags: ['rocketchat'] }
+    - { role: searx, tags: ['searx'] }
+    - { role: sickchill, tags: ['sickchill'] }
+    - { role: smokeping, tags: ['smokeping'] }
     - { role: sonarrx, tags: ['sonarrx'] }
     - { role: speedtest, tags: ['speedtest'] }
-    - { role: sshwifty, tags: ['sshwifty']}
+    - { role: sshwifty, tags: ['sshwifty'] }
+    - { role: stash, tags: ['stash'] }
     - { role: subsonic, tags: ['subsonic'] }
     - { role: synclounge, tags: ['synclounge'] }
+    - { role: tdarrv2, tags: ['tdarrv2'] }
+    - { role: tdarrv2-node, tags: ['tdarrv2', 'tdarrv2-node'] }
+    - { role: telegraf, tags: ['telegraf'] }
     - { role: telly, tags: ['telly'] }
+    - { role: thelounge, tags: ['thelounge'] }
+    - { role: transmissionvpn, tags: ['transmissionvpn'] }
+    - { role: transmissionx, tags: ['transmissionx'] }
+    - { role: ubooquity, tags: ['ubooquity'] }
     - { role: unifi, tags: ['unifi'] }
+    - { role: unmanic, tags: ['unmanic'] }
+    - { role: varken, tags: ['varken'] }
+    - { role: vnstat, tags: ['vnstat'] }
+    - { role: vscode, tags: ['vscode'] }
+    - { role: watchtower, tags: ['watchtower'] }
+    - { role: wallabag, tags: ['wallabag'] }
+    - { role: whisparr, tags: ['whisparr'] }
     - { role: wordpress, tags: ['wordpress'] }
+    - { role: xbackbone, tags: ['xbackbone'] }
     - { role: xteve, tags: ['xteve'] }
+    - { role: znc, tags: ['znc'] }

@@ -1,5 +1,5 @@
 #########################################################################
-# Title:            Cloudbox Community: Glances                         #
+# Title:            Community: Glances                                  #
 # Author(s):        Satz                                                #
 # URL:              https://github.com/Cloudbox/Community               #
 # Docker Image(s):  satzisa/glances                                     #
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: glances
+    record: glances
   when: cloudflare_enabled
 
 - name: Stop and remove any existing container
@@ -56,24 +56,25 @@
 - name: Create and start container
   docker_container:
     name: glances
-    image: "satzisa/glances"
+    image: "nicolargo/glances"
     pull: yes
     env:
+      TZ: "{{ tz }}"
       UID: "{{ uid }}"
       GID: "{{ gid }}"
       VIRTUAL_HOST: "glances.{{ user.domain }}"
-      VIRTUAL_PORT: 61208
+      VIRTUAL_PORT: "61208"
       LETSENCRYPT_HOST: "glances.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
       GLANCES_OPT: "-w"
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "/opt/glances/config:/glances/conf:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - name: cloudbox
         aliases:
           - glances
+    pid_mode: host
     purge_networks: yes
-    restart_policy: always
+    restart_policy: unless-stopped
     state: started

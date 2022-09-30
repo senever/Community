@@ -1,0 +1,55 @@
+#########################################################################
+# Title:         Community: Watchower Role                              #
+# Author(s):     l3uddz                                                 #
+# URL:           https://github.com/Cloudbox/Community                  #
+# Docker Image:  containrrr/watchtower                                  #
+# --                                                                    #
+#         Part of the Cloudbox project: https://cloudbox.works          #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+- name: Stop and remove any existing container
+  docker_container:
+    name: watchtower
+    state: absent
+
+- name: Create watchtower directories
+  file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }} recurse=yes"
+  with_items:
+    - /opt/watchtower
+
+- name: "Check if watchtower.env file exists"
+  stat:
+    path: "/opt/watchtower/watchtower.env"
+  register: watchtower_env
+
+- name: "Import watchtower.env if it doesnt exist"
+  template:
+    src: watchtower.env.j2
+    dest: /opt/watchtower/watchtower.env
+    force: yes
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: 0775
+  when: not watchtower_env.stat.exists
+
+- name: Create container
+  docker_container:
+    name: watchtower
+    image: "containrrr/watchtower"
+    pull: yes
+    env_file: /opt/watchtower/watchtower.env
+    env:
+      TZ: "{{ tz }}"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+      "com.github.cloudbox.cloudbox_managed": "true"
+    networks:
+      - name: cloudbox
+        aliases:
+          - watchtower
+    purge_networks: yes
+    state: started
+    restart_policy: unless-stopped

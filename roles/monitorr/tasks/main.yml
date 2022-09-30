@@ -1,5 +1,5 @@
 #########################################################################
-# Title:            Cloudbox Community: Monitorr                        #
+# Title:            Community: Monitorr                                 #
 # Author(s):        Superduper09, Kalroth                               #
 # URL:              https://github.com/Cloudbox/Community               #
 # Docker Image(s):  monitorr/monitorr                                   #
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: monitorr
+    record: monitorr
   when: cloudflare_enabled
 
 - name: Stop and remove any existing container
@@ -32,14 +32,14 @@
     image: monitorr/monitorr:develop
     pull: yes
     env:
+      TZ: "{{ tz }}"
       PUID: "{{ uid }}"
       PGID: "{{ gid }}"
       VIRTUAL_HOST: "monitorr.{{ user.domain }}"
-      VIRTUAL_PORT: 80
+      VIRTUAL_PORT: "80"
       LETSENCRYPT_HOST: "monitorr.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "/opt/monitorr:/app"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
@@ -47,5 +47,5 @@
       - name: cloudbox
         aliases:
           - monitorr
-    restart_policy: always
+    restart_policy: unless-stopped
     state: started

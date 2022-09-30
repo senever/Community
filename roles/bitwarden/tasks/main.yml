@@ -1,5 +1,5 @@
 #########################################################################
-# Title:            Cloudbox Community: Bitwarden                       #
+# Title:            Community: Bitwarden                                #
 # Author(s):        Kalroth, RXWatcher                                  #
 # URL:              https://github.com/Cloudbox/Community               #
 # Docker Image(s):  bitwardenrs/server                                  #
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: bitwarden
+    record: bitwarden
   when: cloudflare_enabled
 
 - name: Stop and remove any existing container
@@ -49,18 +49,18 @@
 - name: Create and start container
   docker_container:
     name: bitwarden
-    image: bitwardenrs/server:latest
+    image: vaultwarden/server:latest
     pull: yes
     published_ports:
       - "127.0.0.1:6423:6423"
     env:
-      ROCKET_PORT: 6423
+      TZ: "{{ tz }}"
+      ROCKET_PORT: "6423"
       VIRTUAL_HOST: "bitwarden.{{ user.domain }}"
-      VIRTUAL_PORT: 6423
+      VIRTUAL_PORT: "6423"
       LETSENCRYPT_HOST: "bitwarden.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "/opt/bitwarden:/data"
       - "/opt/bitwarden/env:/.env"
     labels:
@@ -70,5 +70,5 @@
       - name: cloudbox
         aliases:
           - bitwarden
-    restart_policy: always
+    restart_policy: unless-stopped
     state: started

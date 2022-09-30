@@ -1,8 +1,8 @@
 #########################################################################
-# Title:            Cloudbox Community: Radarrx                         #
+# Title:            Community: Radarrx                                  #
 # Author(s):        Superduper09, Migz93                                #
 # URL:              https://github.com/Cloudbox/Community               #
-# Docker Image(s):  hotio/radarr                                        #
+# Docker Image(s):  cr.hotio.dev/hotio/radarr                                        #
 # --                                                                    #
 #         Part of the Cloudbox project: https://cloudbox.works          #
 #########################################################################
@@ -24,12 +24,15 @@
   ignore_errors: yes
   when: (cloudbox_community_radarrx.stdout | trim | length > 0)
 
+- name: Stop and remove radarr4k Docker container if it exists
+  docker_container:
+    name: radarr4k
+    state: absent
+
 - name: "Execute RadarrX roles"
   include_tasks: template.yml
   vars:
     rolename: "{{ role }}"
-    roleport: "{{ 17878 + index }}"
   with_items: "{{ radarrx.roles }}"
   loop_control:
     loop_var: role
-    index_var: index

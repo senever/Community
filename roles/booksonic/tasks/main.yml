@@ -1,8 +1,8 @@
 #########################################################################
-# Title:            Cloudbox Community: Booksonic                       #
+# Title:            Community: Booksonic                                #
 # Author(s):        moarbytes, muplah                                   #
 # URL:              https://github.com/Cloudbox/Community               #
-# Docker Image(s):  linuxserver/booksonic                               #
+# Docker Image(s):  lscr.io/linuxserver/booksonic                               #
 # --                                                                    #
 #         Part of the Cloudbox project: https://cloudbox.works          #
 #########################################################################
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: booksonic
+    record: booksonic
   when: cloudflare_enabled
 
 - name: Stop and remove any existing container
@@ -29,19 +29,17 @@
 - name: Create and start container
   docker_container:
     name: booksonic
-    image: linuxserver/booksonic
+    image: lscr.io/linuxserver/booksonic
     pull: yes
-    published_ports:
-      - "127.0.0.1:4042:4040"
     env:
+      TZ: "{{ tz }}"
       PUID: "{{ uid }}"
       PGID: "{{ gid }}"
       VIRTUAL_HOST: "booksonic.{{ user.domain }}"
-      VIRTUAL_PORT: 4040
+      VIRTUAL_PORT: "4040"
       LETSENCRYPT_HOST: "booksonic.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "/opt/booksonic:/config"
       - "/mnt/unionfs/Media/Audiobooks:/audiobooks"
       - "/mnt/unionfs/Media/Podcasts:/podcasts"
@@ -55,5 +53,5 @@
         aliases:
           - booksonic
     purge_networks: yes
-    restart_policy: always
+    restart_policy: unless-stopped
     state: started

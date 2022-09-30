@@ -1,5 +1,5 @@
 #########################################################################
-# Title:            Cloudbox Community: Plex2 | Default Variables       #
+# Title:            Community: Plex2 | Default Variables                #
 # Author(s):        desimaniac                                          #
 # URL:              https://github.com/Cloudbox/Community               #
 # Docker Image(s):  cloudb0x/plex                                       #
@@ -33,14 +33,13 @@ plex2_folders:
 # Docker Image
 ################################
 
-plex2_docker_image: "cloudb0x/plex:{{ plex.tag }}"
+plex2_docker_image: "plexinc/pms-docker:{{ plex.tag }}"
 
 ################################
 # Docker Volumes
 ################################
 
 plex2_docker_volumes:
-  - "/etc/localtime:/etc/localtime:ro"
   - "/opt/plex2:/config"
   - "/opt/scripts:/scripts"
   - "/mnt/unionfs/Media:/data"
@@ -55,16 +54,11 @@ plex2_docker_volumes:
 
 localhost_ip: "127.0.0.1"
 
-lazyman_ip: "{{ ( lookup('dig', 'powersports.ml', '@8.8.8.8', 'qtype=A') | ipv4 ) | default(false,true) }}"
-
 plex_default_hosts:
   "metric.plex.tv": "{{ localhost_ip }}"
   "metrics.plex.tv": "{{ localhost_ip }}"
   "analytics.plex.tv": "{{ localhost_ip }}"
 
-plex_custom_hosts:
-  "mf.svc.nhl.com": "{{ lazyman_ip | ternary(lazyman_ip, omit) }}"
-  "mlb-ws-mf.media.mlb.com": "{{ lazyman_ip | ternary(lazyman_ip, omit) }}"
-  "playback.svcs.mlb.com": "{{ lazyman_ip | ternary(lazyman_ip, omit) }}"
+plex_custom_hosts: []
 
 plex2_docker_hosts: "{{ plex_default_hosts | combine(plex_custom_hosts) }}"

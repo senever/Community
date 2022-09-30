@@ -1,5 +1,5 @@
 #########################################################################
-# Title:            Cloudbox Community: Logarr                          #
+# Title:            Community: Logarr                                   #
 # Author(s):        Superduper09, Kalroth, RXWatcher                    #
 # URL:              https://github.com/Cloudbox/Community               #
 # Docker Image(s):  monitorr/logarr-alpha                               #
@@ -13,7 +13,7 @@
   include_role:
     name: cloudflare-dns
   vars:
-    subdomain: logarr
+    record: logarr
   when: cloudflare_enabled
 
 - name: Stop and remove any existing container
@@ -50,14 +50,14 @@
     image: monitorr/logarr-alpha:latest
     pull: yes
     env:
+      TZ: "{{ tz }}"
       PUID: "{{ uid }}"
       PGID: "{{ gid }}"
       VIRTUAL_HOST: "logarr.{{ user.domain }}"
-      VIRTUAL_PORT: 80
+      VIRTUAL_PORT: "80"
       LETSENCRYPT_HOST: "logarr.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "/opt/logarr/config:/app"
       - "/opt:/opt"
       - "/mnt:/mnt"
@@ -67,5 +67,5 @@
       - name: cloudbox
         aliases:
           - logarr
-    restart_policy: always
+    restart_policy: unless-stopped
     state: started
