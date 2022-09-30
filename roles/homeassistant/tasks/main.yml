@@ -1,6 +1,6 @@
 #########################################################################
-# Title:            Community: LazyLibrarian                            #
-# Author(s):        Superduper09                                        #
+# Title:            Community: HomeAssistant                            #
+# Author(s):        fugume                                              #
 # URL:              https://github.com/Cloudbox/Community               #
 # Docker Image(s):  thraxis/lazylibrarian-calibre                       #
 # --                                                                    #
@@ -13,45 +13,43 @@
   include_role:
     name: cloudflare-dns
   vars:
-    record: lazylibrarian
+    record: homeassistant
   when: cloudflare_enabled
 
 - name: Stop and remove any existing container
   docker_container:
-    name: lazylibrarian
+    name: homeassistant
     state: absent
 
-- name: Create lazylibrarian directories
+- name: Create home assistant directories
   file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
   with_items:
-    - /opt/lazylibrarian
+    - /opt/homeassistant
 
 - name: Create and start container
   docker_container:
-    name: lazylibrarian
-    image: thraxis/lazylibrarian-calibre
+    name: homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable 
     pull: yes
     published_ports:
-      - "127.0.0.1:5299:5299"
+      - "127.0.0.1:8123:8123"
     env:
       TZ: "{{ tz }}"
       PUID: "{{ uid }}"
       PGID: "{{ gid }}"
-      VIRTUAL_HOST: "lazylibrarian.{{ user.domain }}"
-      VIRTUAL_PORT: "5299"
-      LETSENCRYPT_HOST: "lazylibrarian.{{ user.domain }}"
+      VIRTUAL_HOST: "homeassistant.{{ user.domain }}"
+      VIRTUAL_PORT: "8123"
+      LETSENCRYPT_HOST: "homeassistant.{{ user.domain }}"
       LETSENCRYPT_EMAIL: "{{ user.email }}"
     volumes:
-      - "/opt/lazylibrarian:/config"
+      - "/opt/homeassistant:/config"
       - "/mnt:/mnt"
-      - "/mnt/unionfs/Media/Books:/books"
-      - "/mnt/local/downloads/nzbs:/downloads/nzbs"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
     networks:
       - name: cloudbox
         aliases:
-          - lazylibrarian
+          - homeassistant
     purge_networks: yes
     restart_policy: unless-stopped
     state: started

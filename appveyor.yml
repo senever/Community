@@ -54,6 +54,7 @@ environment:
     handbrake
     healthchecks
     heimdall
+    homeassistant
     influxdb
     invoiceninja
     jdownloader2
