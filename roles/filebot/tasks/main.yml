@@ -16,6 +16,17 @@
     record: filebot
   when: cloudflare_enabled
 
+- name: Create htpasswd
+  htpasswd:
+    path: "/opt/nginx-proxy/htpasswd/{{ item }}.{{ user.domain }}"
+    name: "{{ user.name }}"
+    password: "{{ user.pass }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: 0664
+  with_items:
+    - filebot
+
 - name: Stop and remove any existing container
   docker_container:
     name: filebot
@@ -31,8 +42,6 @@
     name: filebot
     image: jlesage/filebot
     pull: yes
-    published_ports:
-      - "127.0.0.1:5801:5800"
     env:
       TZ: "{{ tz }}"
       USER_ID: "{{ uid }}"
@@ -53,6 +62,8 @@
       - name: cloudbox
         aliases:
           - filebot
+    exposed_ports:
+      - 5800
     purge_networks: yes
     restart_policy: unless-stopped
     state: started

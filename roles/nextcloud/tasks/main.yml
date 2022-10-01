@@ -2,7 +2,7 @@
 # Title:            Community: Nextcloud Role                           #
 # Author(s):        l3uddz, desimaniac                                  #
 # URL:              https://github.com/Cloudbox/Community               #
-# Docker Image(s):  linuxserver/nextcloud                               #
+# Docker Image(s):  lscr.io/linuxserver/nextcloud                               #
 # --                                                                    #
 #         Part of the Cloudbox project: https://cloudbox.works          #
 #########################################################################
@@ -12,6 +12,9 @@
 - name: MariaDB Role
   include_role:
     name: mariadb
+
+- name: "sleep for 120 seconds and continue"
+  wait_for: timeout=120
 
 - name: "Set DNS Record on CloudFlare"
   include_role:
@@ -35,7 +38,7 @@
 - name: Create and start nextcloud container
   docker_container:
     name: nextcloud
-    image: "linuxserver/nextcloud"
+    image: "lscr.io/linuxserver/nextcloud"
     pull: yes
     env:
       TZ: "{{ tz }}"

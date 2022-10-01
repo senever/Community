@@ -1,0 +1,56 @@
+#########################################################################
+# Title:            Community: Petio                                    #
+# Author(s):        chazlarson                                          #
+# URL:              https://github.com/Cloudbox/Community               #
+# Docker Image(s):  cr.hotio.dev/hotio/petio                                         #
+# --                                                                    #
+#         Part of the Cloudbox project: https://cloudbox.works          #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+- name: MongoDB Role
+  include_role:
+    name: mongodb
+
+- name: "Setting CloudFlare DNS Record"
+  include_role:
+    name: cloudflare-dns
+  vars:
+    record: petio
+  when: cloudflare_enabled
+
+- name: Stop and remove any existing container
+  docker_container: "name={{ item }} state=absent"
+  with_items:
+    - petio
+
+- name: Create required directories
+  file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
+  with_items:
+    - "/opt/petio"
+
+- name: Create and start petio container
+  docker_container:
+    name: "petio"
+    image: "ghcr.io/petio-team/petio"
+    pull: yes
+    user: "{{ uid }}:{{ gid }}"
+    env:
+      TZ: "{{ tz }}"
+      VIRTUAL_HOST: "petio.{{ user.domain }}"
+      VIRTUAL_PORT: "7777"
+      LETSENCRYPT_HOST: "petio.{{ user.domain }}"
+      LETSENCRYPT_EMAIL: "{{ user.email }}"
+    volumes:
+      - "/opt/petio:/app/api/config:rw"
+      - "/mnt:/mnt"
+    labels:
+      "com.github.cloudbox.cloudbox_managed": "true"
+    networks:
+      - name: cloudbox
+        aliases:
+          - "petio"
+    purge_networks: yes
+    restart_policy: unless-stopped
+    state: started

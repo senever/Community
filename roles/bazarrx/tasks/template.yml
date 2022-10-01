@@ -2,7 +2,7 @@
 # Title:            Community: BazarrX | Template                       #
 # Author(s):        Migz93                                              #
 # URL:              https://github.com/Cloudbox/Community               #
-# Docker Image(s):  linuxserver/bazarr                                  #
+# Docker Image(s):  lscr.io/linuxserver/bazarr                                  #
 # --                                                                    #
 #         Part of the Cloudbox project: https://cloudbox.works          #
 #########################################################################
@@ -19,9 +19,6 @@
   vars:
     record: "bazarr{{ rolename }}"
   when: cloudflare_enabled
-
-- name: Hotio Migration Tasks
-  import_tasks: "subtasks/hotio_migration.yml"
 
 - name: Create bazarrx directories
   file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
@@ -40,8 +37,10 @@
 - name: Create and start container
   docker_container:
     name: "bazarr{{ rolename }}"
-    image: "hotio/bazarr:{{ bazarrx.version }}"
+    image: "cr.hotio.dev/hotio/bazarr:{{ bazarrx.version }}"
     pull: yes
+    exposed_ports:
+      - "6767"
     env:
       TZ: "{{ tz }}"
       PUID: "{{ uid }}"

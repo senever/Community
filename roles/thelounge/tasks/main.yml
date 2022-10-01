@@ -2,7 +2,7 @@
 # Title:         Community: TheLounge Role                              #
 # Author(s):     l3uddz                                                 #
 # URL:           https://github.com/Cloudbox/Community                  #
-# Docker Image:  linuxserver/thelounge                                  #
+# Docker Image:  lscr.io/linuxserver/thelounge                                  #
 # --                                                                    #
 #         Part of the Cloudbox project: https://cloudbox.works          #
 #########################################################################
@@ -29,10 +29,8 @@
 - name: Create and start container
   docker_container:
     name: thelounge
-    image: "linuxserver/thelounge"
+    image: "lscr.io/linuxserver/thelounge"
     pull: yes
-    published_ports:
-      - "127.0.0.1:9500:9000"
     env:
       TZ: "{{ tz }}"
       PUID: "{{ uid }}"
